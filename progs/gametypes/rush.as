@@ -155,13 +155,13 @@ bool GT_Command(Client @client, const String &cmdString, const String &argsStrin
         G_PrintMsg(client.getEnt(), response);
         return true;
     }
-    
+
     if (cmdString == "callvotevalidate") {
         String votename = argsString.getToken(0);
         client.printMessage("Unknown callvote " + votename + "\n");
         return false;
     }
-    
+
     if (cmdString == "callvotepassed") {
         String votename = argsString.getToken(0);
         return true;
@@ -474,7 +474,7 @@ void GT_InitGametype() {
     gametype.teamOnlyMinimap = false;
 
     gametype.mmCompatible = true;
-    
+
     gametype.spawnpointRadius = 256;
 
     if (gametype.isInstagib) {
