@@ -1,0 +1,10 @@
+## Default behaviour
+* text=auto
+
+## Normalize line endings for all source files
+*.as text eol=lf
+*.gt text eol=lf
+*.gtd text eol=lf
+*.md text eol=lf
+*.cfg text eol=lf
+*.txt text eol=lf

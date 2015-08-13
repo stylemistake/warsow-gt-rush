@@ -1,0 +1,3 @@
+[submodule "vendor/runner"]
+	path = vendor/runner
+	url = https://github.com/stylemistake/bash-task-runner.git
