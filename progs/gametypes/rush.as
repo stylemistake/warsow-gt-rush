@@ -23,13 +23,13 @@ const int RUSH_ITEMS_MASK = (IT_WEAPON | IT_AMMO | IT_HEALTH);
 const array<int> RUSH_PRIMARY_WEAPONS = {
     WEAP_ROCKETLAUNCHER,
     WEAP_ELECTROBOLT,
-    WEAP_LASERGUN,
+    WEAP_LASERGUN
 };
 const array<int> RUSH_SECONDARY_WEAPONS = {
     WEAP_MACHINEGUN,
     WEAP_RIOTGUN,
     WEAP_GRENADELAUNCHER,
-    WEAP_PLASMAGUN,
+    WEAP_PLASMAGUN
 };
 
 class Timer {
@@ -121,7 +121,7 @@ void DM_playerKilled(Entity @target, Entity @attacker, Entity @inflicter) {
         }
 
         if (attacker.weapon == WEAP_GUNBLADE) {
-            target.dropItem(HEALTH_ULTRA);
+            target.dropItem(HEALTH_LARGE);
         }
     }
 
@@ -273,9 +273,9 @@ void GT_PlayerRespawn(Entity @ent, int old_team, int new_team) {
     }
 
     if (gametype.isInstagib) {
-        ent.client.inventoryGiveItem( WEAP_INSTAGUN );
-        ent.client.inventorySetCount( AMMO_INSTAS, 1 );
-        ent.client.inventorySetCount( AMMO_WEAK_INSTAS, 1 );
+        ent.client.inventoryGiveItem(WEAP_INSTAGUN);
+        ent.client.inventorySetCount(AMMO_INSTAS, 1);
+        ent.client.inventorySetCount(AMMO_WEAK_INSTAS, 1);
     } else {
         Item @item;
         Item @ammoItem;
@@ -290,14 +290,25 @@ void GT_PlayerRespawn(Entity @ent, int old_team, int new_team) {
             ent.client.inventorySetCount( ammoItem.tag, ammoItem.inventoryMax );
         }
 
-        ent.health = 200;
+        ent.maxHealth = 200;
+        ent.health = 100;
+        ent.client.armor = 125;
 
-        // give primary gun
-        int index = int(brandom(0, RUSH_PRIMARY_WEAPONS.length() - 1));
+        uint index;
+
+        // give primary gun #1
+        index = uint(brandom(0, RUSH_PRIMARY_WEAPONS.length()));
         giveGun(ent, RUSH_PRIMARY_WEAPONS[index]);
 
+        // give primary gun #2
+        if (index == RUSH_PRIMARY_WEAPONS.length() - 1) {
+            giveGun(ent, RUSH_PRIMARY_WEAPONS[0]);
+        } else {
+            giveGun(ent, RUSH_PRIMARY_WEAPONS[index+1]);
+        }
+
         // give secondary gun
-        index = int(brandom(0, RUSH_SECONDARY_WEAPONS.length() - 1));
+        index = uint(brandom(0, RUSH_SECONDARY_WEAPONS.length()));
         giveGun(ent, RUSH_SECONDARY_WEAPONS[index]);
     }
 
@@ -324,6 +335,13 @@ void GT_ThinkRules() {
 
     for (int i = 0; i < maxClients; i++) {
         @ent = @G_GetClient(i).getEnt();
+
+        // Drain health if more than 100
+        if (ent.health > 100) {
+            ent.health -= ( frameTime * 0.001f );
+        }
+
+        // Charge gunblade
         if (ent.client.state() >= CS_SPAWNED && ent.team != TEAM_SPECTATOR) {
             GENERIC_ChargeGunblade(ent.client);
         }
