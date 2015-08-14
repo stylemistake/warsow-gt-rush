@@ -90,7 +90,7 @@ class TimersManager {
 TimersManager timersManager;
 
 // -----------------------------------------------------------------
-// NEW MAP ENTITY DEFINITIONS
+//  NEW MAP ENTITY DEFINITIONS
 // -----------------------------------------------------------------
 
 // -----------------------------------------------------------------
@@ -99,9 +99,9 @@ TimersManager timersManager;
 
 // a player has just died. The script is warned about it so it can account scores
 void DM_playerKilled(Entity @target, Entity @attacker, Entity @inflicter) {
-    if (match.getState() != MATCH_STATE_PLAYTIME) {
-        return;
-    }
+    // if (match.getState() != MATCH_STATE_PLAYTIME) {
+    //     return;
+    // }
 
     if (@target.client == null) {
         return;
@@ -229,6 +229,10 @@ String @GT_ScoreboardMessage(uint maxlen) {
 // Warning: client can be null
 void GT_ScoreEvent(Client @client, const String &score_event, const String &args) {
     if (score_event == "dmg") {
+        // Don't count score if match didn't start yet.
+        if (match.getState() != MATCH_STATE_PLAYTIME) {
+            return;
+        }
         int damage = args.getToken(1).toInt();
         if (@client != null) {
             client.stats.addScore(damage);
@@ -261,7 +265,7 @@ void giveGun(Entity @ent, int weapon) {
     Item @item = @G_GetItem(weapon);
     Item @ammoItem = @G_GetItem(item.ammoTag);
     if (@ammoItem != null) {
-        ent.client.inventorySetCount(ammoItem.tag, ammoItem.inventoryMax);
+        ent.client.inventorySetCount(ammoItem.tag, ammoItem.inventoryMax / 2);
     }
 }
 
@@ -349,7 +353,7 @@ void GT_ThinkRules() {
 
     if (timersManager.isIntervalPassed("penalty")) {
         for (int i = 0; i < maxClients; i++) {
-            @ent = @G_GetClient( i ).getEnt();
+            @ent = @G_GetClient(i).getEnt();
             if (ent.client.state() >= CS_SPAWNED && ent.team != TEAM_SPECTATOR) {
                 if (ent.client.stats.score > RUSH_penalty_PER_SEC) {
                     ent.client.stats.addScore(-RUSH_penalty_PER_SEC);
