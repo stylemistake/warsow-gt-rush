@@ -121,7 +121,7 @@ void DM_playerKilled(Entity @target, Entity @attacker, Entity @inflicter) {
         }
 
         if (attacker.weapon == WEAP_GUNBLADE) {
-            target.dropItem(HEALTH_LARGE);
+            target.dropItem(HEALTH_MEGA);
         }
     }
 
@@ -265,7 +265,7 @@ void giveGun(Entity @ent, int weapon) {
     Item @item = @G_GetItem(weapon);
     Item @ammoItem = @G_GetItem(item.ammoTag);
     if (@ammoItem != null) {
-        ent.client.inventorySetCount(ammoItem.tag, ammoItem.inventoryMax / 2);
+        ent.client.inventorySetCount(ammoItem.tag, ammoItem.inventoryMax);
     }
 }
 
@@ -295,8 +295,8 @@ void GT_PlayerRespawn(Entity @ent, int old_team, int new_team) {
         }
 
         ent.maxHealth = 200;
-        ent.health = 100;
-        ent.client.armor = 125;
+        ent.health = 200;
+        // ent.client.armor = 125;
 
         uint index;
 
@@ -304,12 +304,12 @@ void GT_PlayerRespawn(Entity @ent, int old_team, int new_team) {
         index = uint(brandom(0, RUSH_PRIMARY_WEAPONS.length()));
         giveGun(ent, RUSH_PRIMARY_WEAPONS[index]);
 
-        // give primary gun #2
-        if (index == RUSH_PRIMARY_WEAPONS.length() - 1) {
-            giveGun(ent, RUSH_PRIMARY_WEAPONS[0]);
-        } else {
-            giveGun(ent, RUSH_PRIMARY_WEAPONS[index+1]);
-        }
+        // // give primary gun #2
+        // if (index == RUSH_PRIMARY_WEAPONS.length() - 1) {
+        //     giveGun(ent, RUSH_PRIMARY_WEAPONS[0]);
+        // } else {
+        //     giveGun(ent, RUSH_PRIMARY_WEAPONS[index+1]);
+        // }
 
         // give secondary gun
         index = uint(brandom(0, RUSH_SECONDARY_WEAPONS.length()));
@@ -340,10 +340,10 @@ void GT_ThinkRules() {
     for (int i = 0; i < maxClients; i++) {
         @ent = @G_GetClient(i).getEnt();
 
-        // Drain health if more than 100
-        if (ent.health > 100) {
-            ent.health -= ( frameTime * 0.001f );
-        }
+        // // Drain health if more than 100
+        // if (ent.health > 100) {
+        //     ent.health -= ( frameTime * 0.001f );
+        // }
 
         // Charge gunblade
         if (ent.client.state() >= CS_SPAWNED && ent.team != TEAM_SPECTATOR) {
