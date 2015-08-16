@@ -99,9 +99,9 @@ TimersManager timersManager;
 
 // a player has just died. The script is warned about it so it can account scores
 void DM_playerKilled(Entity @target, Entity @attacker, Entity @inflicter) {
-    // if (match.getState() != MATCH_STATE_PLAYTIME) {
-    //     return;
-    // }
+    if (match.getState() != MATCH_STATE_PLAYTIME) {
+        return;
+    }
 
     if (@target.client == null) {
         return;
@@ -228,14 +228,31 @@ String @GT_ScoreboardMessage(uint maxlen) {
 // oponents, like capturing a flag
 // Warning: client can be null
 void GT_ScoreEvent(Client @client, const String &score_event, const String &args) {
+    Entity @attacker = @client.getEnt();
+    Entity @target = @G_GetEntity(args.getToken(0).toInt());
+    int damage = args.getToken(1).toInt();
+
     if (score_event == "dmg") {
         // Don't count score if match didn't start yet.
         if (match.getState() != MATCH_STATE_PLAYTIME) {
             return;
         }
-        int damage = args.getToken(1).toInt();
         if (@client != null) {
-            client.stats.addScore(damage);
+            // Subtract self damage from score
+            if (attacker.playerNum == target.playerNum) {
+                damage = -damage;
+            }
+            if (damage > target.health) {
+                // Too much damage, cap at target's health
+                // Covers telefrags
+                damage = int(target.health);
+            }
+            if (client.stats.score + damage > 0) {
+                client.stats.addScore(damage);
+            } else {
+                // Don't set negative scores
+                client.stats.setScore(0);
+            }
         }
         return;
     }
