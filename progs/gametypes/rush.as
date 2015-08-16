@@ -451,7 +451,7 @@ void GT_SpawnGametype() {
 
 void GT_InitGametype() {
     gametype.title = "Rush Deathmatch";
-    gametype.version = "1.2.1";
+    gametype.version = "0.3.2";
     gametype.author = "Pepper";
 
     // if the gametype doesn't have a config file, create it
@@ -463,7 +463,7 @@ void GT_InitGametype() {
                  + "// This config will be executed each time the gametype is started\n"
                  + "\n\n// map rotation\n"
                  + "set g_maplist \"wda1 wda2 wda3 wda4 wda5\" // list of maps in automatic rotation\n"
-                 + "set g_maprotation \"1\"   // 0 = same map, 1 = in order, 2 = random\n"
+                 + "set g_maprotation \"0\"   // 0 = same map, 1 = in order, 2 = random\n"
                  + "\n// game settings\n"
                  + "set g_scorelimit \"0\"\n"
                  + "set g_timelimit \"15\"\n"
